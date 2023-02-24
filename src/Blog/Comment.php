@@ -8,8 +8,8 @@ class Comment
 {
     // private int $id;
     private UUID $id;
-    private int $authorId;
-    private int $postId;
+    private UUID $authorId;
+    private string $postId;
     private string $text;
 
     public function __construct(

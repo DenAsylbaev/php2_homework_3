@@ -26,14 +26,14 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     public function save(Comment $comment): void
     {
         $statement = $this->connection->prepare(
-            'INSERT INTO comments (uuid, post_uuid, author_uuid, txt)
-            VALUES (:uuid, :post_uuid, :author_uuid, :txt)'
+            'INSERT INTO comments (comment, post, author, txt)
+            VALUES (:comment, :post, :author, :txt)'
             );
             // Выполняем запрос с конкретными значениями
             $statement->execute([
-            ':uuid' => $comment->id(),
-            ':post_uuid' => $comment->getPostId(),
-            ':author_uuid' => $comment->getAuthorId(),
+            ':comment' => $comment->id(),
+            ':post' => $comment->getPostId(),
+            ':author' => $comment->getAuthorId(),
             ':txt' => $comment->getText()
             ]);
             
@@ -41,11 +41,9 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
     public function get(UUID $uuid): Comment
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM comments WHERE uuid = ?'
+            'SELECT * FROM comments WHERE comment = ?'
         );
-        $statement->execute([
-            ':uuid' => (string)$uuid,
-        ]);
+        $statement->execute([(string)$uuid]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
 // исключение, если не найден
@@ -58,9 +56,9 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
         $postRepo = new SqlitePostsRepository($this->connection); // чтоб пост получить потом
 
         return new Comment(
-            new UUID($result['uuid']),
-            $userRepo->get($result['author_uuid']),
-            $postRepo->get($result['post_uuid']),
+            new UUID($result['comment']),
+            $userRepo->get($result['author']),
+            $postRepo->get($result['post']),
             $result['txt']        
         );
     }

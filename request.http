@@ -1,8 +1,30 @@
-# GET http://127.0.0.1:8000/some/path?some_parameter=123
-GET http://127.0.0.1:8000/users/show?username=ivan
 
-Some-Header: Some Value
+# GET http://127.0.0.1:8080/posts/show?post=60339f1d-f7a7-422a-9b11-64ba5acc8c14
 
+# GET http://127.0.0.1:8080/
+# Some-Header: Some Value
 # Cookie: XDEBUG_SESSION=start
 
 
+
+
+# POST http://127.0.0.1:8080/posts/create
+# Some-Header: Some Value
+
+# {
+# "author_uuid": "743bdbc3-3478-4d4f-91e1-cc93ca38e216",
+# "text": "some BLA BLA BLedeA",
+# "title": "some title"
+# }
+
+
+# POST http://127.0.0.1:8080/posts/comment
+# Some-Header: Some Value
+
+# {
+# "author_uuid": "743bdbc3-3478-4d4f-91e1-cc93ca38e216",
+# "post_uuid": "49eb905c-283d-43d7-9184-57f2d12632b4",
+# "text": "my comment"
+# }
+
+DELETE http://127.0.0.1:8080/posts?uuid=b058e418-2c4b-4002-a161-a1be28fc127e	

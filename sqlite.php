@@ -17,7 +17,7 @@ $connection->exec('CREATE TABLE posts (
   post uuid TEXT NOT NULL 
     CONSTRAINT uuid_primary_key PRIMARY KEY,
   author uuid TEXT NOT NULL 
-    CONSTRAINT username_unique_key UNIQUE,
+    CONSTRAINT username_unique_key,
   title TEXT,
   txt TEXT
 )');
@@ -26,9 +26,9 @@ $connection->exec('CREATE TABLE comments (
   comment uuid TEXT NOT NULL 
     CONSTRAINT uuid_primary_key PRIMARY KEY,
   post uuid TEXT NOT NULL 
-    CONSTRAINT username_unique_key UNIQUE,
+    CONSTRAINT username_unique_key,
   author uuid TEXT NOT NULL 
-    CONSTRAINT username_unique_key UNIQUE,
+    CONSTRAINT username_unique_key,
   txt TEXT
 )');
 

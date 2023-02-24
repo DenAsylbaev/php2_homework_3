@@ -40,16 +40,23 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         $statement = $this->connection->prepare(
             'SELECT * FROM users WHERE uuid = ?'
         );
-        $statement->execute([
-            ':uuid' => (string)$uuid,
-        ]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        // $statement->execute([ -- КАК БЫЛО
+        //     ':uuid' => (string)$uuid,
+        // ]);
+
+        $statement->execute([(string)$uuid]);
+        // $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // print_r($result); //НЕ РАБОТАЕТ ПОИСК ПО id!!!!!!!!!!!!AAAAAABLYAAAAAAA!!!!
+        // print_r('tttt');
+        // die();
+
 // Бросаем исключение, если пользователь не найден
-        if (false === $result) {
-            throw new UserNotFoundException(
-                "Cannot get user: $uuid"
-            );
-        }
+        // if (false === $result) {
+        //     throw new UserNotFoundException(
+        //         "Cannot get user: $uuid"
+        //     );
+        // }
         return $this->getUser($statement, $uuid);
 
     }
@@ -65,12 +72,17 @@ class SqliteUsersRepository implements UsersRepositoryInterface
         return $this->getUser($statement, $username);
     }
 
-    private function getUser(PDOStatement $statement, string $username): User
+    private function getUser(PDOStatement $statement, string $errorname): User
     {
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        // print_r($result); //НЕ РАБОТАЕТ ПОИСК ПО id!!!!!!!!!!!!AAAAAABLYAAAAAAA!!!!
+        // print_r('tttt2');
+        // die();
+
         if (false === $result) {
             throw new UserNotFoundException(
-                "Cannot find user: $username"
+                "Cannot find user: $errorname"
             );
         }   
         return new User(

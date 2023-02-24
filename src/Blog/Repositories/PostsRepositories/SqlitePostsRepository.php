@@ -21,42 +21,48 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         }
         
     public function save(Post $post): void
-    {
+    {        
         $statement = $this->connection->prepare(
-            'INSERT INTO posts (uuid, author_uuid, title, txt)
-            VALUES (:uuid, :author_uuid, :title, :txt)'
+            'INSERT INTO posts (post, author, title, txt)
+            VALUES (:post, :author, :title, :txt)'
             );
+
             // Выполняем запрос с конкретными значениями
             $statement->execute([
-                ':uuid' => $post->id(),
-                ':author_uuid' => $post->getAuthorId(),
-                ':title' => (string)$post->getTitle(),
+                ':post' => (string)$post->id(),
+                ':author' => (string)$post->getAuthorId(),
+                ':title' => $post->getTitle(),
                 ':txt' => $post->getText()
             ]);
-            
     }
     public function get(UUID $uuid): Post
     {
         $statement = $this->connection->prepare(
-            'SELECT * FROM posts WHERE uuid = ?'
+            'SELECT * FROM posts WHERE post = ?'
         );
-        $statement->execute([
-            ':uuid' => (string)$uuid,
-        ]);
+        // $statement->execute([ -- КАК БЫЛО
+        //     ':post' => (string)$uuid,
+        // ]);
+        $statement->execute([(string)$uuid]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-// исключение, если пост не найден
-        if (false === $result) {
-            throw new PostNotFoundException(
-                "Cannot get post: $uuid"
-            );
-        }
         $userRepo = new SqliteUsersRepository($this->connection); // чтоб юзера получить потом
         return new Post(
-            new UUID($result['uuid']),
-            $userRepo->get($result['author_uuid']),
+            new UUID($result['post']),
+            $userRepo->get(new UUID($result['author'])),
             $result['title'],
-            $result['txt']        
+            $result['txt']
         );
+    }
+
+    public function delete(UUID $uuid)
+    {
+        print_r('tets');
+        print_r((string)$uuid);
+
+        $statement = $this->connection->prepare(
+            'DELETE FROM posts WHERE post = ?'
+        );
+
+        $statement->execute([(string)$uuid]);
     }
 }
